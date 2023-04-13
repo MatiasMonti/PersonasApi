@@ -1,7 +1,8 @@
 ﻿using AutoMapper;
 using PeoplesApi.Aplication;
 using PeoplesApi.Models;
-using System.Data.Entity;
+using PeoplesApi.Tables;
+using Microsoft.EntityFrameworkCore;
 
 namespace PersonasApi.Services
 {
@@ -16,31 +17,54 @@ namespace PersonasApi.Services
             this.Mapper = cMapper;
         }
 
-        public async Task<List<People>> GetPeopleAsync()
+        public async Task<List<PeopleModel>> GetPeopleAsync()
         {
             List<People> lisPeople = await Context.People.ToListAsync();
 
-            return lisPeople;
+            return this.Mapper.Map<List<People>, List<PeopleModel>>(lisPeople);
         }
          
-        public async Task<People> GetShuffledPersonAsync()
+        public async Task<PeopleModel> GetShuffledPersonAsync()
         {
             People shuffledPerson = await Context.People.OrderBy(r => Guid.NewGuid()).FirstAsync();
 
-            return shuffledPerson;
+            return this.Mapper.Map<People, PeopleModel>(shuffledPerson);
         }
          
-        public async Task<People> GetPersonById(int IDPeople)
+        public async Task<PeopleModel> GetPersonById(int IDPeople)
         {
-            People shuffledPerson = await Context.People.Where(r => r.ID == IDPeople).FirstAsync();
+            People? shuffledPerson = await Context.People.FindAsync(IDPeople);
 
-            return shuffledPerson;
+            nullValidator(shuffledPerson);
+
+            return this.Mapper.Map<People, PeopleModel>(shuffledPerson);
+        }
+
+        public async Task DeletePerson(int IDPeople)
+        {
+            People? ToDeletePerson = await Context.People.FindAsync(IDPeople);
+
+            nullValidator(ToDeletePerson);
+
+            Context.People.Remove(ToDeletePerson);
+
+            await Context.SaveChangesAsync();
+        }
+
+        private void nullValidator(People? entPeople)
+        {
+            if (entPeople == null)
+            {
+                throw new Exception("No se encontro el usuario");
+            }
         }
     }
+
     public interface IPeopleServices
     {
-        public Task<List<People>> GetPeopleAsync();
-        Task<object?> GetPersonById(int IDPeople);
-        Task<object?> GetShuffledPersonAsync();
+        public Task<List<PeopleModel>> GetPeopleAsync();
+        public Task<PeopleModel> GetPersonById(int IDPeople);
+        public Task<PeopleModel> GetShuffledPersonAsync();
+        public Task DeletePerson(int IDPeople);
     }
 }

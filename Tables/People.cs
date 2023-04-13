@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace PeoplesApi.Models
+﻿namespace PeoplesApi.Tables
 {
     public class People
     {

@@ -15,21 +15,31 @@ namespace PeoplesApi.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> people()
+        public async Task<IActionResult> GetPeople()
         {
             return Ok(await this.PeopleServices.GetPeopleAsync());
         }
 
         [HttpGet]
-        public async Task<IActionResult> shuffle()
+        [Route("[action]")]
+        public async Task<IActionResult> Shuffle()
         {
             return Ok(await this.PeopleServices.GetShuffledPersonAsync());
         }
 
         [HttpGet]
-        public async Task<IActionResult> id([FromQuery] int IDPeople)
+        [Route("{id:int}")]
+        public async Task<IActionResult> GetPerson(int id)
         {
-            return Ok(await this.PeopleServices.GetPersonById(IDPeople));
+            return Ok(await this.PeopleServices.GetPersonById(id));
+        }
+
+        [HttpDelete]
+        [Route("{id:int}")]
+        public async Task<IActionResult> DeletePerson(int id)
+        {
+            await this.PeopleServices.DeletePerson(id);
+            return Ok();
         }
     }
 }
