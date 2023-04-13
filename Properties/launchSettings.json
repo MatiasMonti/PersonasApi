@@ -9,7 +9,7 @@
     }
   },
   "profiles": {
-    "PersonasApi": {
+    "PeoplesApi": {
       "commandName": "Project",
       "dotnetRunMessages": true,
       "launchBrowser": true,

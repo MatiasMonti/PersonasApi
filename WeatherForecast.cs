@@ -1,4 +1,4 @@
-namespace PersonasApi
+namespace PeoplesApi
 {
     public class WeatherForecast
     {
